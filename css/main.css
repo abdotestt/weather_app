@@ -1,0 +1,14 @@
+.card-info{
+    background-image: url('/images/bg1.jpg');
+    background-size: cover;
+    border-radius: 20px;
+}
+#w-info {
+    margin-top: 20px;
+}
+
+#weather-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}

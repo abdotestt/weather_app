@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Météo</title>
+  <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+</head>
+<body>
+  <!-- <div class="container">
+    <div class="current-weather">
+      <div id="w-info"></div>
+    </div>
+    <div class="search">
+      <input type="text" id="city-input" placeholder="Entrez le nom de la ville">
+      <button onclick="searchWeather()">Rechercher</button>
+    </div>
+    <div class="forecast">
+      <h2>Prévisions météo</h2>
+      <canvas id="forecast-chart"></canvas>
+    </div>
+  </div> -->
+  <div class="container mt-5">
+    <section class="sec1 d-flex">
+        <input type="text" class="form-control" id="city-input" placeholder="Enter city name">
+        <button class="btn btn-primary ml-2" onclick="searchWeather()" id="searchBtn">Search</button>
+    </section>
+    <div class="d-flex">
+      <section class="card-info col-md-6">
+          <div class="w-info" id="w-info">
+              today is wonderfull
+          </div>
+      </section>
+      <section class="sec2 mt-4 col-md-6">
+        <canvas id="forecast-chart"></canvas>
+      </section>
+    </div>
+</div>
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>
