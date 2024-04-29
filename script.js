@@ -3,69 +3,61 @@ const apiKey = '3386785b3ab623f90e80f3843a3df13b';
 window.addEventListener('load', () => {
   navigator.geolocation.getCurrentPosition(position => {
     const { latitude, longitude } = position.coords;
-    getWeatherByCoordinates(latitude, longitude);
-    const cityInput = document.getElementById('city-input').value;
-    get_weather_info(latitude, longitude,cityInput);
+    getWeatherInfo(latitude, longitude);
   }, error => {
     console.error(error);
   });
 });
 
-function getWeatherByCoordinates(latitude, longitude) {
-  fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&lang=fr&units=metric`)
+function getWeatherInfo(latitude, longitude, city = "") {
+  const uri = city ? `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&lang=fr&units=metric` : `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&lang=fr&units=metric`;
+
+  fetch(uri)
     .then(response => response.json())
     .then(data => {
-      displayForecast(data);
+      displayWeatherData(data);
     })
     .catch(error => {
-      console.error('Error fetching forecast:', error);
+      console.error('Error fetching weather data:', error);
     });
-}
-function get_weather_info(latitude=null, longitude=null,city=null) {
-  if(city==null){
-    const uri="https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&lang=fr&units=metric"
-  }else{
-    const uri="https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&lang=fr&units=metric"
-  }
-  fetch(`${uri}`)
-      .then(response => response.json())
-      .then(data => {
-          const temperature = data.main.temp;
-          const humidity = data.main.humidity;
-          const cityName = data.name;
-          let card_div = document.getElementById('w-info');
-          card_div.innerHTML = `
-          <div class=" align-items-center ml-4">
-            <div class="d-flex">
-              <img src="images/map.png" height=60px width=60px class="mb-4" alt="Cloudy">
-              <h2 class="m3">${cityName}</h1>
-            </div>
-            <div class="d-flex">  
-              <img src="images/cloudy.png" height=60px width=60px class="mb-4 mt-2" alt="Cloudy">
-              <h2 class="m-3">Temperature: ${temperature}</h2>
-            </div>
-            <div class="d-flex">  
-              <img src="/images/houmy.png" height=60px width=60px class="mb-4 mt-2" >
-              <h2 class="m3">Humidity: ${humidity}</h2>
-            </div>
-            </div>
-           `;
-      })
-      .catch(error => {
-          console.error('Error fetching weather data:', error);
-      });
 }
 
 function searchWeather() {
   const cityInput = document.getElementById('city-input').value;
-  fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${apiKey}&lang=fr&units=metric`)
-    .then(response => response.json())
-    .then(data => {
-      displayForecast(data);
-    })
-    .catch(error => {
-      console.error('Error fetching forecast for city:', error);
-    });
+  if(cityInput) {
+    getWeatherInfo(null, null, cityInput);
+  }
+}
+
+function displayWeatherData(data) {
+  const temperature = data.list[0].main.temp;
+  const humidity = data.list[0].main.humidity;
+  const cityName = data.city.name;
+  const weatherIconCode = data.list[0].weather[0].icon; // Get weather icon code
+
+  // URL base des icônes météo
+  const iconBaseUrl = 'https://openweathermap.org/img/wn/';
+  const weatherIconUrl = iconBaseUrl + weatherIconCode + '.png'; // Construire l'URL de l'icône météo
+
+  let cardDiv = document.getElementById('w-info');
+  cardDiv.innerHTML = `
+    <div class=" align-items-center ml-4">
+      <div class="d-flex">
+        <img src="images/map.png" height=60px width=60px class="mb-4" alt="Weather Icon">
+        <h2 class="m3">${cityName}</h1>
+      </div>
+      <div class="d-flex">  
+        <img src="images/cloudy.png" height=60px width=60px class="mb-4 mt-2" alt="Cloudy">
+        <h2 class="m-3">Temperature: ${temperature}</h2>
+      </div>
+      <div class="d-flex">  
+        <img src="images/houmy.png" height=60px width=60px class="mb-4 mt-2" >
+        <h2 class="m3">Humidity: ${humidity}</h2>
+      </div>
+    </div>
+  `;
+
+  displayForecast(data);
 }
 
 function displayForecast(data) {
@@ -85,13 +77,11 @@ function displayForecast(data) {
 
   const ctx = document.getElementById('forecast-chart').getContext('2d');
   
-  // Check if a chart instance already exists and destroy it
   if (window.chartInstance) {
     window.chartInstance.destroy();
   }
 
-  // Create a new chart instance
-  window.chartInstance = new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: labels,
@@ -113,6 +103,6 @@ function displayForecast(data) {
       }
     }
   });
+
+  window.chartInstance = chart;
 }
-
-

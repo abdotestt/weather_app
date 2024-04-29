@@ -1,5 +1,9 @@
+body{
+    background-image: url(images/bg2.jpg);
+    background-size: cover;
+}
 .card-info{
-    background-image: url('/images/bg1.jpg');
+    background-image: url('images/bg1.jpg');
     background-size: cover;
     border-radius: 20px;
 }
@@ -11,4 +15,9 @@
     width: 100px;
     height: 100px;
     margin-bottom: 10px;
+}
+.sec2{
+    background-color: beige;
+    border-radius: 22px;
+    margin-left: 10px;
 }
